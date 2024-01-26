@@ -1,0 +1,4 @@
+[libraries]
+kotlinx-coroutines="org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.8.0-RC2"
+kotlin-poet="com.squareup:kotlinpoet-jvm:1.16.0"
+kotlin-ksp="com.google.devtools.ksp:symbol-processing-api:1.9.21-1.0.15"
