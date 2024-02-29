@@ -1,6 +1,5 @@
 package com.bethibande.example
 
-import com.bethibande.actors.annotations.ActorModel
 import java.time.LocalDateTime
 
 @ActorModel
