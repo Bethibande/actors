@@ -3,8 +3,10 @@ plugins {
 }
 
 dependencies {
-    implementation(project(":lib"))
+    implementation(project(":base"))
     ksp(project(":processor"))
+
+    implementation(libs.kotlinx.coroutines)
 }
 
 kotlin {
