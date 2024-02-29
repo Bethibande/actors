@@ -2,7 +2,7 @@ package com.bethibande.actors.cache
 
 import kotlin.reflect.KClass
 
-class ObjectStore {
+class CommonObjectPool {
 
     private val values = mutableMapOf<KClass<*>, MutableMap<Any, Any>>()
 

@@ -13,3 +13,4 @@ dependencyResolutionManagement {
     }
 }
 include("example")
+include("base")
