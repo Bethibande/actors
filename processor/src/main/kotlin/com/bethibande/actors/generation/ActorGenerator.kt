@@ -20,6 +20,7 @@ class ActorGenerator {
         CommandGenerator().generateCommands(type, fields, environment)
         ActorBaseGenerator().generateBase(type, fields, environment)
         APIGenerator().generate(type, fields, environment)
+        BehaviorGenerator().generateBehaviorStub(type, fields, environment)
     }
 
 }
