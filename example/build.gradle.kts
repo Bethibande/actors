@@ -4,6 +4,7 @@ plugins {
 
 dependencies {
     implementation(project(":base"))
+    implementation(project(":lib"))
     ksp(project(":processor"))
 
     implementation(libs.kotlinx.coroutines)

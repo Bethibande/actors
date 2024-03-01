@@ -10,7 +10,7 @@ version = "1.0-SNAPSHOT"
 fun Project.applyRepos() {
     repositories {
         mavenLocal()
-        maven("https://maven.bethibande.com/mirror")
+        //maven("https://maven.bethibande.com/mirror")
         mavenCentral()
     }
 }

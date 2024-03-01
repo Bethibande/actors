@@ -5,9 +5,12 @@ protobuf = "3.25.3"
 io-grpc-kotlin = "1.4.1"
 io-grpc = "1.62.2"
 
+kotlinpoet = "1.16.0"
+
 [libraries]
 kotlinx-coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.8.0-RC2"
-kotlin-poet = "com.squareup:kotlinpoet-jvm:1.16.0"
+kotlin-poet = { module = "com.squareup:kotlinpoet-jvm", version.ref = "kotlinpoet" }
+kotlin-poet-ksp = { module = "com.squareup:kotlinpoet-ksp", version.ref = "kotlinpoet" }
 kotlin-ksp = "com.google.devtools.ksp:symbol-processing-api:1.9.21-1.0.15"
 
 io-grpc-kotlin-stub = { module = "io.grpc:grpc-kotlin-stub", version.ref = "io-grpc-kotlin" }
