@@ -32,14 +32,14 @@ class BehaviorGenerator {
 
     private fun generateSetBehavior(field: ActorStateField, environment: SymbolProcessorEnvironment) {
         val fieldNameUpper = field.name.replaceFirstChar { it.uppercaseChar() }
-        val name = "${field.parent.simpleName.replace(" State ", " Behavior ")}Set$fieldNameUpper"
+        val name = "${field.parent.simpleName.replace("State", "Behavior")}Set$fieldNameUpper"
         val className = ClassName("${field.parent.packageName}.behavior", name)
 
         val stateType = field.parent.type.toTypeName()
         val superType = Behavior::class.asTypeName().parameterizedBy(field.setCommand!!, stateType)
 
         val funSpec = FunSpec.builder("accept")
-            .addModifiers(KModifier.OVERRIDE)
+            .addModifiers(KModifier.OVERRIDE, KModifier.SUSPEND)
             .addParameter("command", field.setCommand!!)
             .addParameter("state", stateType)
             .addStatement("state.%N = command.%N", field.name, field.name)
@@ -57,18 +57,19 @@ class BehaviorGenerator {
             .build()
 
         fileSpec.writeTo(environment.codeGenerator, Dependencies(true))
+        field.setBehavior = className
     }
 
     private fun generateGetBehavior(field: ActorStateField, environment: SymbolProcessorEnvironment) {
         val fieldNameUpper = field.name.replaceFirstChar { it.uppercaseChar() }
-        val name = "${field.parent.simpleName.replace(" State ", " Behavior ")}Get$fieldNameUpper"
+        val name = "${field.parent.simpleName.replace("State", "Behavior")}Get$fieldNameUpper"
         val className = ClassName("${field.parent.packageName}.behavior", name)
 
         val stateType = field.parent.type.toTypeName()
         val superType = Behavior::class.asTypeName().parameterizedBy(field.getCommand!!, stateType)
 
         val funSpec = FunSpec.builder("accept")
-            .addModifiers(KModifier.OVERRIDE)
+            .addModifiers(KModifier.OVERRIDE, KModifier.SUSPEND)
             .addParameter("command", field.getCommand!!)
             .addParameter("state", stateType)
             .addStatement("command.deferred.complete(state.%N)", field.name)
@@ -86,6 +87,7 @@ class BehaviorGenerator {
             .build()
 
         fileSpec.writeTo(environment.codeGenerator, Dependencies(true))
+        field.getBehavior = className
     }
 
 }

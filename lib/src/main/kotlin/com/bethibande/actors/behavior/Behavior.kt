@@ -10,6 +10,6 @@ package com.bethibande.actors.behavior
  */
 interface Behavior<C, S> {
 
-    fun accept(command: C, state: S)
+    suspend fun accept(command: C, state: S)
 
 }

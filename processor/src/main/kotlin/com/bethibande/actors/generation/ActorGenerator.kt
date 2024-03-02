@@ -18,9 +18,9 @@ class ActorGenerator {
 
     private fun generateActor(type: ActorStateType, fields: List<ActorStateField>, environment: SymbolProcessorEnvironment) {
         CommandGenerator().generateCommands(type, fields, environment)
+        BehaviorGenerator().generateBehaviorStub(type, fields, environment)
         ActorBaseGenerator().generateBase(type, fields, environment)
         APIGenerator().generate(type, fields, environment)
-        BehaviorGenerator().generateBehaviorStub(type, fields, environment)
     }
 
 }

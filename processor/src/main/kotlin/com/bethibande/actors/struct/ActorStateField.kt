@@ -14,4 +14,6 @@ data class ActorStateField(
     val parent: ActorStateType,
     var getCommand: ClassName? = null,
     var setCommand: ClassName? = null,
+    var setBehavior: ClassName? = null,
+    var getBehavior: ClassName? = null,
 )
