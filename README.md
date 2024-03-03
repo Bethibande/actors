@@ -23,23 +23,23 @@ data class PersonState(
 ```
 [Main.kt](example/src/main/kotlin/com/bethibande/example/Main.kt)
 ```kotlin
-val actor = PersonActor(PersonState("Max", 17)) // actor containing message-channel
-val api = Person(actor) // generated class, containing getter and setter functions
-
 runBlocking {
-    // run actor in a new coroutine
-    launch { actor.run() }
-    
-    // use generated api
-    println("${api.getName()}: ${api.getAge()}")
-    
-    api.setAge(18)
-    
-    println("${api.getName()}: ${api.getAge()}")
+    // Create actor-system
+    val system = Person.localActorSystem()
+    // Create a new actor
+    val person: Person = system.new(PersonState("Max", 17))
+
+    // Use generated actor api
+    println("${person.getName()}: ${person.getAge()}")
+    person.setAge(18)
+    println("${person.getName()}: ${person.getAge()}")
 
     // Custom behavior/command (see com.bethibande.example.person.CustomFunctionality.kt)
-    val (name, age) = api.getNameAndAge()
+    val (name, age) = person.getNameAndAge()
     println("Custom: $name, $age")
+
+    // Send close command
+    person.close()
 }
 ```
 [CustomFunctionality.kt](example/src/main/kotlin/com/bethibande/example/person/CustomFunctionality.kt)
@@ -60,7 +60,7 @@ data class PersonCommandGetNameAndAge(
 }
 
 class PersonBehaviorGetNameAndAge: Behavior<PersonCommandGetNameAndAge, PersonState> {
-    override suspend fun accept(command: PersonCommandGetNameAndAge, state: PersonState) {
+    override suspend fun accept(command: PersonCommandGetNameAndAge, state: PersonState, actor: AbstractActor<*, *>) {
         command.deferred.complete(state.name to state.age)
     }
 }

@@ -4,6 +4,7 @@ import com.bethibande.actors.AbstractActor
 import com.bethibande.actors.behavior.BehaviorMap
 import com.bethibande.actors.struct.ActorStateField
 import com.bethibande.actors.struct.ActorStateType
+import com.bethibande.actors.system.ActorContext
 import com.google.devtools.ksp.processing.Dependencies
 import com.google.devtools.ksp.processing.SymbolProcessorEnvironment
 import com.squareup.kotlinpoet.ClassName
@@ -27,7 +28,7 @@ class ActorBaseGenerator {
         type.actorType = className
 
         val treeType = BehaviorMap::class.asTypeName()
-            .parameterizedBy(type.commandInterface!!, type.type.toTypeName())
+            .parameterizedBy(type.commandInterface!!, type.typeName)
 
         val behaviorTreePropertySpec = buildBehaviorTree(treeType, fields)
 
@@ -35,18 +36,16 @@ class ActorBaseGenerator {
             .addProperty(behaviorTreePropertySpec)
             .build()
 
+        val contextType = ActorContext::class.asTypeName()
+            .parameterizedBy(type.commandInterface!!, type.typeName)
 
         val constructorSpec = FunSpec.constructorBuilder()
-            .addParameter("initialState", type.type.toTypeName())
-            .addParameter(ParameterSpec.builder("behavior", treeType)
-                .defaultValue("BehaviorMap") // Companion field
-                .build())
+            .addParameter("context", contextType)
             .build()
 
         val typeSpec = TypeSpec.classBuilder(className)
-            .superclass(AbstractActor::class.asTypeName().parameterizedBy(type.commandInterface!!, type.type.toTypeName()))
-            .addSuperclassConstructorParameter("behavior")
-            .addSuperclassConstructorParameter("initialState")
+            .superclass(AbstractActor::class.asTypeName().parameterizedBy(type.commandInterface!!, type.typeName))
+            .addSuperclassConstructorParameter("context")
             .primaryConstructor(constructorSpec)
             .addType(companionSpec)
             .build()

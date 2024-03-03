@@ -6,6 +6,7 @@ import com.google.devtools.ksp.processing.Resolver
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSFile
 import com.google.devtools.ksp.validate
+import com.squareup.kotlinpoet.ksp.toTypeName
 
 class ActorStateCollector {
 
@@ -25,9 +26,12 @@ class ActorStateCollector {
         val packageName = declaration.packageName.asString()
         val fullyQualifiedName = "$packageName.$simpleName"
 
+        val type = declaration.asType(emptyList())
+
         return ActorStateType(
             declaration,
-            declaration.asType(emptyList()),
+            type,
+            type.toTypeName(),
             packageName,
             simpleName,
             fullyQualifiedName

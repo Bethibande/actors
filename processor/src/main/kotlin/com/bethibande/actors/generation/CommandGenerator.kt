@@ -21,9 +21,28 @@ class CommandGenerator {
 
     fun generateCommands(type: ActorStateType, fields: List<ActorStateField>, environment: SymbolProcessorEnvironment) {
         val commandInterfaceName = generateCommandInterface(type, environment)
+        val closeCommand = generateCloseCommand(commandInterfaceName, environment)
         type.commandInterface = commandInterfaceName
+        type.closeCommand = closeCommand
 
         fields.forEach { field -> generateCommands(field, commandInterfaceName, environment) }
+    }
+
+    private fun generateCloseCommand(commandInterface: ClassName, environment: SymbolProcessorEnvironment): ClassName {
+        val name = "${commandInterface.simpleName}Close"
+        val className = ClassName(commandInterface.packageName, name)
+
+        val typeSpec = TypeSpec.objectBuilder(className)
+            .addSuperinterface(commandInterface)
+            .addKdoc("Auto-generated close command used to close actors.")
+            .build()
+
+        val fileSpec = FileSpec.builder(className)
+            .addType(typeSpec)
+            .build()
+
+        fileSpec.writeTo(environment.codeGenerator, Dependencies(true))
+        return className
     }
 
     private fun generateCommands(
@@ -57,7 +76,7 @@ class CommandGenerator {
             .addProperty(PropertySpec.builder(field.name, field.type.toTypeName())
                 .initializer(field.name)
                 .build())
-            .addKdoc("Auto generated command interface used to assign a value to ${field.name} of the [${field.parent.fullyQualifiedName}] class")
+            .addKdoc("Auto-generated command interface used to assign a value to ${field.name} of the [${field.parent.fullyQualifiedName}] class")
             .build()
 
         val fileSpec = FileSpec.builder(className)
@@ -89,7 +108,7 @@ class CommandGenerator {
                 .addParameter(parameterSpec)
                 .build())
             .addProperty(propertySpec)
-            .addKdoc("Auto generated command interface used to retrieve the ${field.name} field of the [${field.parent.fullyQualifiedName}] class")
+            .addKdoc("Auto-generated command interface used to retrieve the ${field.name} field of the [${field.parent.fullyQualifiedName}] class")
             .build()
 
         val fileSpec = FileSpec.builder(className)
@@ -105,7 +124,7 @@ class CommandGenerator {
         val className = ClassName("${type.packageName}.commands", name)
 
         val typeSpec = TypeSpec.interfaceBuilder(className)
-            .addKdoc("Auto generated command interface for the actor [${type.fullyQualifiedName}]")
+            .addKdoc("Auto-generated command interface for the actor [${type.fullyQualifiedName}]")
             .build()
 
         val fileSpec = FileSpec.builder(className.packageName, className.simpleName)

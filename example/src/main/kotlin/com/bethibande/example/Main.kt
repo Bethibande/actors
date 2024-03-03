@@ -1,30 +1,30 @@
 package com.bethibande.example
 
 import com.bethibande.example.person.Person
-import com.bethibande.example.person.PersonActor
 import com.bethibande.example.person.PersonState
 import com.bethibande.example.person.getNameAndAge
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
 object Main {
 
     @JvmStatic
-    fun main(args: Array<String>) {
-        val actor = PersonActor(PersonState("Max", 17))
-        val api = Person(actor)
+    fun main(args: Array<String>) = runBlocking {
+        // Create actor-system
+        val system = Person.localActorSystem()
+        // Create a new actor
+        val person: Person = system.new(PersonState("Max", 17))
 
-        runBlocking {
-            launch { actor.run() }
+        // Use actor
+        println("${person.getName()}: ${person.getAge()}")
+        person.setAge(18)
+        println("${person.getName()}: ${person.getAge()}")
 
-            println("${api.getName()}: ${api.getAge()}")
-            api.setAge(18)
-            println("${api.getName()}: ${api.getAge()}")
+        // Custom behavior/command (see com.bethibande.example.person.CustomFunctionality.kt)
+        val (name, age) = person.getNameAndAge()
+        println("Custom: $name, $age")
 
-            // Custom behavior/command (see com.bethibande.example.person.CustomFunctionality.kt)
-            val (name, age) = api.getNameAndAge()
-            println("Custom: $name, $age")
-        }
+        // Send close command
+        person.close()
     }
 
 }
