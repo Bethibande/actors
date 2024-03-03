@@ -1,5 +1,6 @@
 package com.bethibande.example.person
 
+import com.bethibande.actors.AbstractActor
 import com.bethibande.actors.behavior.Behavior
 import com.bethibande.example.person.commands.PersonCommand
 import kotlinx.coroutines.CompletableDeferred
@@ -16,7 +17,7 @@ data class PersonCommandGetNameAndAge(
 }
 
 class PersonBehaviorGetNameAndAge: Behavior<PersonCommandGetNameAndAge, PersonState> {
-    override suspend fun accept(command: PersonCommandGetNameAndAge, state: PersonState) {
+    override suspend fun accept(command: PersonCommandGetNameAndAge, state: PersonState, actor: AbstractActor<*, *>) {
         command.deferred.complete(state.name to state.age)
     }
 }

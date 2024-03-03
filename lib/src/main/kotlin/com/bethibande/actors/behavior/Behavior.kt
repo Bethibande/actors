@@ -1,5 +1,7 @@
 package com.bethibande.actors.behavior
 
+import com.bethibande.actors.AbstractActor
+
 /**
  * A behavior is a response to an actor receiving a command.
  * The behavior may freely mutate the [AbstractActor]s state or perform some other kind of action.
@@ -10,6 +12,6 @@ package com.bethibande.actors.behavior
  */
 interface Behavior<C, S> {
 
-    suspend fun accept(command: C, state: S)
+    suspend fun accept(command: C, state: S, actor: AbstractActor<*, *>)
 
 }

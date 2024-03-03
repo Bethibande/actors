@@ -2,8 +2,10 @@ package com.bethibande.actors.generation
 
 import com.bethibande.actors.struct.ActorStateField
 import com.bethibande.actors.struct.ActorStateType
+import com.bethibande.actors.system.LocalActorSystem
 import com.google.devtools.ksp.processing.Dependencies
 import com.google.devtools.ksp.processing.SymbolProcessorEnvironment
+import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
@@ -42,11 +44,21 @@ class APIGenerator {
             .addKdoc("Sends the given command to the wrapped actor.")
             .build()
 
+        val closeFunSpec = FunSpec.builder("close")
+            .addModifiers(KModifier.OPEN, KModifier.SUSPEND)
+            .addStatement("send(%T)", type.closeCommand!!)
+            .addKdoc("Sends a close command to closed the actor.")
+            .build()
+
+        val companionSpec = buildCompanion(type, className)
+
         val typeSpec = TypeSpec.classBuilder(className)
             .addModifiers(KModifier.OPEN)
+            .addType(companionSpec)
             .primaryConstructor(constructorSpec)
             .addProperty(actorPropertySpec)
             .addFunction(sendFunSpec)
+            .addFunction(closeFunSpec)
             .apply { addFunctions(fields, this) }
             .addKdoc("Auto generated class, api used to interact with [${type.fullyQualifiedName}]")
             .build()
@@ -56,6 +68,26 @@ class APIGenerator {
             .build()
 
         fileSpec.writeTo(environment.codeGenerator, Dependencies(true))
+    }
+
+    private fun buildCompanion(type: ActorStateType, className: ClassName): TypeSpec {
+        val actorSystemType = LocalActorSystem::class.asTypeName()
+            .parameterizedBy(className, type.actorType!!, type.commandInterface!!, type.type.toTypeName())
+
+        val localActorSystemFunSpec = FunSpec.builder("localActorSystem")
+            .addStatement(
+                "return %T(::%T, ::%T, %T.BehaviorMap)",
+                LocalActorSystem::class,
+                type.actorType!!,
+                className,
+                type.actorType!!,
+            )
+            .returns(actorSystemType)
+            .build()
+
+        return TypeSpec.companionObjectBuilder()
+            .addFunction(localActorSystemFunSpec)
+            .build()
     }
 
     private fun addFunctions(fields: List<ActorStateField>, typeSpec: TypeSpec.Builder) {
