@@ -14,3 +14,4 @@ dependencyResolutionManagement {
 }
 include("example")
 include("base")
+include("sharding")
