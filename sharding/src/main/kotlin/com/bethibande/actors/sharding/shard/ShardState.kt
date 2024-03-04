@@ -1,4 +1,4 @@
-package com.bethibande.actors.sharding.peer
+package com.bethibande.actors.sharding.shard
 
 sealed interface ShardState {
 
