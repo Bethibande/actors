@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package info;
+option java_package = "com.bethibande.actors.sharding.proto";
+
+message ShardInfo {
+  string id = 1;
+  string address = 2;
+  int64 startTime = 3;
+  Resources resources = 4;
+}
+
+// TODO: move to separate file
+message Resources {
+
+}
